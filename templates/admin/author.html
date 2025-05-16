@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+
+{% block body %}
+
+    <h1>Author: {{author.name}}</h1>
+
+    <a href="/admin/users">All users</a>
+
+    <a href="/admin/summary">Summary page</a>
+
+    <a href="/logout">Logout</a>
+
+    <p>
+        <img src="{{author.image_url}}" alt="Author image" style="width: 200px; height: 200px;"><br>
+        <strong>Name:</strong> {{author.name}}<br>
+        <strong>Description:</strong> {{author.description}}<br>
+    </p>
+
+    <br><br>
+    <form action="/admin/authors/{{author.id}}" method="post">
+        <h5>Fill form to udate Author information</h5>
+        <label for="name">Author Name: </label>
+        <input type="text" name="name" placeholder="Author Name" value="{{author.name}}" required><br>
+        <label for="description">Author description: </label>
+        <input type="text" name="description" placeholder="Author description" value="{{author.description}}" required><br>
+        <label for="image">Author image URL: </label>
+        <input type="text" name="image" placeholder="Author image URL" value="{{author.image_url}}" required><br>
+
+        <label for="delete">Do you want to delete?</label>
+        <input type="checkbox" name="delete"><br>
+
+        <button type="submit">Update Author</button>
+    </form>
+
+{% endblock %}
