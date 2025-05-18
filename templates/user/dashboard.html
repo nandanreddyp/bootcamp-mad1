@@ -6,6 +6,21 @@
 
     <a href="/logout">Logout</a>
 
-    <p>User information: {{session}}</p>
+    <p>Current User information: {{session}}</p>
+
+    <h2>Quotes:</h2>
+    {% if quotes %}
+        <ul>
+            {% for quote in quotes %}
+                <li>
+                    <strong>{{quote.text}}</strong><br>
+                    <strong>Author:</strong> {{quote.author.name}}<br>
+                </li>
+
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No quotes available.</p>
+    {% endif %}
 
 {% endblock %}

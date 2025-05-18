@@ -6,7 +6,7 @@
 
     <a href="/admin/users">All users</a>
 
-    <a href="/admin/summary">Summary page</a>
+    
 
     <a href="/logout">Logout</a>
 
@@ -16,7 +16,19 @@
         <strong>Description:</strong> {{author.description}}<br>
     </p>
 
-    <br><br>
+    <h2>Quotes:</h2>
+    {% if author.quotes %}
+        <ul>
+            {% for quote in author.quotes %}
+                <li>
+                    <strong>{{quote.text}}</strong><br>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No quotes available for this author.</p>
+    {% endif %}
+
     <form action="/admin/authors/{{author.id}}" method="post">
         <h5>Fill form to udate Author information</h5>
         <label for="name">Author Name: </label>

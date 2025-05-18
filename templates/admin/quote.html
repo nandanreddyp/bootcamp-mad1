@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+
+{% block body %}
+
+    <a href="/admin/users">All users</a>
+
+    
+
+    <a href="/logout">Logout</a>
+
+
+    <p><h1>Quote: </h1><strong>{{ quote.text }}</strong></p>
+
+    <p>
+        <h2>Said by:</h2>
+        <img src="{{author.image_url}}" alt="Author image" style="width: 200px; height: 200px;"><br>
+        <strong>Name:</strong> {{author.name}}<br>
+        <strong>Description:</strong> {{author.description}}<br>
+    </p>
+
+    <form action="/admin/quotes/{{quote.id}}" method="post">
+        <h5>Fill form to udate Quote information</h5>
+
+        <label for="text">Quote Text: </label>
+        <textarea type="text" name="text" placeholder="Quote text" required>{{quote.text}}</textarea>
+        <label for="author">Author: </label>
+        <select name="author_id" id="author" required>
+            <option value="" selected disabled>Select Author</option>
+            {% for author in authors %}
+                {% if author.id == quote.author_id %}
+                    <option value="{{author.id}}" selected>{{author.name}}</option>
+                {% else %}
+                    <option value="{{author.id}}">{{author.name}}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+
+        <label for="delete">Do you want to delete?</label>
+        <input type="checkbox" name="delete"><br>
+
+        <button type="submit">Update Quote</button>
+    </form>
+
+{% endblock %}

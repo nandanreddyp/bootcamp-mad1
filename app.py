@@ -1,7 +1,7 @@
 from functools import wraps
 
 from flask import Flask, render_template, redirect, url_for, request, session
-from models import db, User, Author
+from models import db, User, Author, Quote
 
 app = Flask(__name__)
 
@@ -115,6 +115,8 @@ def admin_summary():
     message = request.args.get('message')
     return render_template('admin/summary.html', message=message)
 
+### Admin authors routes ###
+
 @app.route('/admin/authors', methods=['GET', 'POST'])
 @login_required(only_admin=True)
 def admin_authors():
@@ -162,13 +164,68 @@ def admin_author(author_id):
     author = author.to_dict()
     return render_template('admin/author.html', message=message, author=author)
 
+####### Admin quotes routes ###
+
+@app.route('/admin/quotes', methods=['GET', 'POST'])
+@login_required(only_admin=True)
+def admin_quotes():
+    if request.method == 'POST':
+        text = request.form.get('text')
+        author_id = request.form.get('author_id')
+        print(request.form)
+        quote = Quote(
+            text=text,
+            author_id=author_id
+        )
+        db.session.add(quote)
+        db.session.commit()
+        return redirect(url_for('admin_quotes', message='Quote added successfully!'))
+    message = request.args.get('message')
+    quotes = Quote.query.all()
+    quotes = [quote.to_dict() for quote in quotes]
+    authors = Author.query.all()
+    authors = [author.to_dict() for author in authors]
+    return render_template('admin/quotes.html', message=message, quotes=quotes, authors=authors)
+
+
+@app.route('/admin/quotes/<int:quote_id>', methods=['GET', 'POST'])
+@login_required(only_admin=True)
+def admin_quote(quote_id):
+    if request.method == 'POST':
+        quote = Quote.query.get(quote_id)
+        if not quote:
+            return redirect(url_for('admin_quotes', message='Quote not found!'))
+        delete = request.form.get('delete')
+        if delete:
+            db.session.delete(quote)
+            db.session.commit()
+            return redirect(url_for('admin_quotes', message='Quote deleted successfully!'))
+        text = request.form.get('text')
+        author_id = request.form.get('author_id')
+        quote.text = text
+        quote.author_id = author_id
+        db.session.commit()
+        return redirect(url_for('admin_quote', quote_id=quote.id, message='Quote updated successfully!'))
+    message = request.args.get('message')
+    quote = Quote.query.get(quote_id)
+    if not quote:
+        return redirect(url_for('admin_quotes', message='Quote not found!'))
+    author = quote.author; author = author.to_dict()
+    quote = quote.to_dict()
+    authors = Author.query.all()
+    authors = [author.to_dict() for author in authors]
+    return render_template('admin/quote.html', message=message, quote=quote, author=author, authors=authors)
+
+
 ####### User routes #######
 
 @app.route('/')
 @login_required()
 def user_dashboard():
     message = request.args.get('message')
-    return render_template('user/dashboard.html', user=session, message=message)
+    quotes = Quote.query.all()
+    quotes = [quote.to_dict() for quote in quotes]
+    return render_template('user/dashboard.html', user=session, message=message, quotes=quotes)
 
 
 #### Running the app #####

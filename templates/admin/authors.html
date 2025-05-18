@@ -6,15 +6,19 @@
 
     <a href="/admin/users">All users</a>
 
-    <a href="/admin/summary">Summary page</a>
+    
 
     <a href="/logout">Logout</a>
 
-    <br><br>
+
     <form action="/admin/authors" method="post">
-        <input type="text" name="name" placeholder="Author Name" value="Abdul Kalam" required><br>
-        <input type="text" name="description" placeholder="Author description" value="Indian scientist and politician who played a leading role in the development of India's missile and nuclear weapons programs." required><br>
-        <input type="text" name="image" placeholder="Author image URL" value="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/A._P._J._Abdul_Kalam.jpg/1200px-A._P._J._Abdul_Kalam.jpg" required><br>
+        <h5>Fill form to add an Author information</h5>
+        <label for="name">Author Name: </label>
+        <input type="text" name="name" placeholder="Author Name" required><br>
+        <label for="description">Author description: </label>
+        <input type="text" name="description" placeholder="Author description" required><br>
+        <label for="image">Author image URL: </label>
+        <input type="text" name="image" placeholder="Author image URL" required><br>
 
         <button type="submit">Add Author</button>
     </form>
@@ -23,6 +27,7 @@
         <ul>
             {% for author in authors %}
                 <li>{{ author.name }} | <a href="authors/{{author.id}}">View Author</a></li>
+                <hr>
             {% endfor %}
         </ul>
     {% else %}

@@ -24,12 +24,19 @@ class Author(db.Model):
     name = db.Column(db.String(80), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     image_url = db.Column(db.String(200), nullable=False)
-    quotes = db.relationship('Quote', backref='author', lazy=True)
+    quotes = db.relationship('Quote', backref='author', lazy=True, cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Author :{self.name}>'
     
-    def to_dict(self):
+    def to_dict(self, dont_include_quotes=False):
+        if dont_include_quotes:
+            return {
+                'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'image_url': self.image_url,
+            }
         return {
             'id': self.id,
             'name': self.name,
@@ -50,5 +57,6 @@ class Quote(db.Model):
         return {
             'id': self.id,
             'text': self.text,
-            'author': self.author.to_dict() if self.author else None
+            'author_id': self.author_id,
+            'author': self.author.to_dict(dont_include_quotes=True)
         }
