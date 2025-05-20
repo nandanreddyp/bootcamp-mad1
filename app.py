@@ -98,7 +98,32 @@ def logout():
 @login_required(only_admin=True)
 def admin_dashboard():
     message = request.args.get('message')
-    return render_template('admin/dashboard.html', message=message)
+    authros = Author.query.all()
+    authors = [author.to_dict() for author in authros]
+
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+
+    plt.bar([author['name'] for author in authors], [len(author['quotes']) for author in authors], color='green')
+    plt.title('# of Quotes per Author')
+    plt.xlabel('Authors')
+    plt.ylabel('# of Quotes')
+    bargrpah_path = 'static/graphs/barGraph.png'
+    plt.savefig(bargrpah_path)
+
+    plt.clf()  # Clear the current figure
+
+    import numpy as np
+    y = np.array([len(author['quotes']) for author in authors])
+    mylabels = [author['name'] for author in authors]
+    plt.pie(y, labels = mylabels)
+    piegraph_path = 'static/graphs/pieGraph.png'
+    plt.savefig(piegraph_path)
+
+    plt.clf()  # Clear the current figure
+
+    return render_template('admin/dashboard.html', message=message, authors=authors, bargraph_path=bargrpah_path, piegraph_path=piegraph_path)
 
 @app.route('/admin/users')
 @login_required(only_admin=True)
